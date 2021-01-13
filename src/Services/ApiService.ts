@@ -1,31 +1,39 @@
-import Cookies from 'js-cookie';
 import {
-    PROD_HOST_NAME,
-    DEV_HOST_NAME,
+    serverHostName,
     DEV_ACCESS_CONTROL_ALLOW_ORIGIN
-} from './config'
+} from '../config'
 
-const hostName: string = "https://express-chat-room-back-end.herokuapp.com" //"http://localhost:3000"
-const token: string|undefined =  getCookie("token");
+import {
+    getCookie
+} from './StorageService';
 
-export function getCookie(key: string): string|undefined {    
-    return Cookies.get(key);;
+import axios from 'axios';
+
+axios.defaults.baseURL = serverHostName;
+axios.defaults.headers.post['Accept'] = 'application/json';
+axios.defaults.headers.post['Content-Type'] = 'application/json';
+axios.defaults.withCredentials = true;
+axios.defaults.xsrfCookieName = 'XSRF-TOKEN'; // default
+axios.defaults.xsrfHeaderName = 'X-XSRF-TOKEN'; // default
+
+
+export const axiosGet = (url: string): object => {
+    return axios.get(url);
 }
 
-export let setCookie = (key: string, value: string): void => {
-    Cookies.set(key, value, { expires: 7 });
+export const axiosPost = (url: string, data: object): object => {
+    return axios.post(url, data);
 }
 
-export let delCookie = (key: string): void => {
-    Cookies.remove(key);
-}
+export default axios;
 
+/*
 export let fetchGet = (webApi: string): object => {
     //console.log(hostName + "/" + webApi);
     const requestHeaders: HeadersInit = new Headers();
     requestHeaders.set('Accept', 'application/json');
     requestHeaders.set('Content-Type', 'application/json');
-    requestHeaders.set('Authorization', token||'');
+    //requestHeaders.set('Authorization', token||'');
     return fetch(DEV_HOST_NAME + "/" + webApi, {
         method: 'GET',
         //dataType: 'jsonp',
@@ -44,11 +52,12 @@ export let fetchGet = (webApi: string): object => {
 export let fetchPost = (webApi: string, data: object) => {
     //console.log("web api", PROD_HOST_NAME + "/" + webApi);
     const requestHeaders: any = {
-        'Access-Control-Allow-Origin': DEV_ACCESS_CONTROL_ALLOW_ORIGIN,
+        //'Access-Control-Allow-Origin': DEV_ACCESS_CONTROL_ALLOW_ORIGIN,
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': token
+        //'Authorization': token
     };
+    //Dev: DEV_HOST_NAME, Prod: PROD_HOST_NAME
     return fetch(DEV_HOST_NAME + "/" + webApi,{
         method: 'POST',
         headers: requestHeaders,
@@ -64,3 +73,4 @@ export let fetchPost = (webApi: string, data: object) => {
       }
     );   
 }
+*/

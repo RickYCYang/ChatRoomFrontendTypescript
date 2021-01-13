@@ -1,94 +1,111 @@
-import React, {useEffect, useState} from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, {useEffect, useState, useRef} from 'react';
+import { useSelector } from 'react-redux';
 import TextField, {Input} from '@material/react-text-field';
 import MaterialIcon from '@material/react-material-icon';
 import Button from '@material/react-button';
-import {getCookie} from '../../../ApiService';
+//import imageCompression from 'browser-image-compression';
+import {convertFile, compressImage} from '../../../Services/CommonService';
+import {getLocalStorageWithExpiry} from '../../../Services/StorageService';
+import {sendNewMessage} from '../../../Services/WebSocketService';
+import {
+    stateInterface,
+    keyInterface,
+    inputEventInterface
+} from '../../../Interfaces'; 
 
-interface stateInterface{
-    chatRoomReducer:{
-        webSocket: any,
-        onlineCount: number
-    }
-}
 
-interface key{
-    key: string
-}
 
 const MessageSender = () => {
     const [message, setMessage] = useState('');
-    const  {webSocket} = useSelector((state: stateInterface) => state.chatRoomReducer);
-    const [enterPress, setEnterPress] = useState(false);
-    const userName = getCookie('userName');
-    //let pressed = useKey('enter');
-    const messageHandler = (e: any) => {
+    const fileUpload = useRef<HTMLInputElement>(null);
+    const  {webSocket, chatPeople} = useSelector((state: stateInterface) => state.chatRoomReducer);
+    const userName = getLocalStorageWithExpiry('userName') || '';
+    
+    const messageHandler = (e: inputEventInterface): void => {
         const {value} = e.currentTarget;
         setMessage(value);
     }
 
-    useEffect(() => {
-        if(enterPress) {
-            sendMessage();
-            setEnterPress(false);
-        }
-    });
-
-    const sendMessage = () => {
-        const timestamp = new Date().getHours() + ':' + new Date().getMinutes() + 
+    const getTimeStamp = (): string => {
+        const date: Date = new Date();
+        const timestamp: string = date.getFullYear() + '/' + (date.getMonth() + 1) +  '/' + date.getDate() +
+            ' ' + new Date().getHours() + ':' + new Date().getMinutes() + 
             ':' + new Date().getSeconds() + ':' + new Date().getUTCMilliseconds();
-        console.log('sendMessage', message);
-        webSocket.emit('send', {
-            userName: userName,
-            message: message,
-            timestamp: timestamp
-        });
-        setMessage('');
+        return timestamp;
     }
 
-    const enterClick = (key: key) => {
-        //console.log('key', key);
-        if(key.key === 'Enter'){
-            setEnterPress(true);
-        }
+    const sendMessage = (): void => {
+        const timestamp: string = getTimeStamp();
+        sendNewMessage(webSocket, 'string', userName, chatPeople, message, timestamp);
+        setMessage(''); //Clear Textedit
     }
+
+    const enterClick = (key: keyInterface): void => {
+        if(key.key === 'Enter'){
+            sendMessage();
+        }
+    };
 
     useEffect(() => {
-        if(webSocket){
-            document.addEventListener('keypress', enterClick);
-        }
+        document.addEventListener('keypress', enterClick);
         return () => {
-            document.removeEventListener('keypress', enterClick)
+            document.removeEventListener('keypress', enterClick);
         }
-    }, [webSocket])
+    }, [message]);
+
+
+    const fileUploadHandler = async() => {
+        if(fileUpload.current?.files !== null && fileUpload.current?.files !== undefined){
+            const file = fileUpload.current.files[0];
+            //Compress Image at first
+            //console.log('originalFile instanceof Blob', file instanceof Blob); // true
+            //console.log(`originalFile size ${file.size / 1024 / 1024} MB`);
+            // const options = {
+            //     maxSizeMB: 1,
+            //     maxWidthOrHeight: 1920,
+            //     useWebWorker: true
+            // }
+            try {
+            const compressedFile = await compressImage(file);
+            //console.log('compressedFile instanceof Blob', compressedFile instanceof Blob); // true
+            //console.log(`compressedFile size ${compressedFile.size / 1024 / 1024} MB`); // smaller than maxSizeMB
+            /* Convert Image to base64 decode */
+            convertFile(compressedFile).then((fileBase64: string) => {
+                //console.log('image Decode', fileBase64);
+                //console.log('file Name', file.name);
+                const timestamp: string = getTimeStamp();
+                sendNewMessage(webSocket, 'image', userName, chatPeople, fileBase64, timestamp);
+            }).catch(err => console.log('error', err));
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    }
 
     return(
-        <div id='messageSender'>
+        <div id='messageSender'> 
             <TextField
                 label='你想說什麼'
-                id="msgTextEdit" 
-                
+                id="msgTextEdit"                 
                 //helperText={<HelperText>Help Me!</HelperText>}
-                onTrailingIconSelect={() => setMessage("")}
-                trailingIcon={<MaterialIcon role="button" icon="delete"/>}
+                onTrailingIconSelect={() => {fileUpload.current?.click();}}
+                trailingIcon={<MaterialIcon role="button" icon="image"/>}
             >
                 <Input
-                id="msgTextEditInput" 
+                    id="msgTextEditInput" 
                     value={message}
                     onChange={messageHandler} 
                 />
-            </TextField>
-            <div className="wrapper-div">
-                <Button 
-                    id="msgSendBtn"
-                    outlined={true} 
-                    raised={true} 
-                    icon={<MaterialIcon role="button" icon="send" />}
-                    onClick={sendMessage}
-                >Send
-                </Button>
-            </div>
-            
+            </TextField>    
+            <input type='file' style={{display: 'none'}} ref={fileUpload} accept="image/*" onChange={fileUploadHandler}/> 
+            <Button 
+                id="txtSendBtn"
+                outlined={true} 
+                raised={true} 
+                icon={<MaterialIcon role="button" icon="send" />}
+                onClick={sendMessage}
+            >Send
+            </Button>
         </div>
     );
 }

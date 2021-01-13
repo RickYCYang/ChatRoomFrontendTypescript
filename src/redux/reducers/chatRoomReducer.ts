@@ -2,18 +2,39 @@ import {
     CONNECT_WEB_SOCKET,
     CONNECT_WEB_SOCKET_SUCCESS,
     CONNECT_WEB_SOCKET_FAIL,
-    SET_ONLINE_COUNT,
-    SET_MESSAGE_BOX
+    DISCONNECT_WEB_SOCKET,
+    SET_MESSAGE_BOX,
+    SET_MESSAGE_BOX_STYLE,
+    SET_IS_MOBILE,
+    SET_DRAWER_OPEN,
+    SET_USER_LIST,
+    SET_CHAT_PEOPLE,
+    SET_NEW_MESSAGE_ALARM,
+    SET_IMAGE_MODAL
 } from '../actionTypes'
+import {chatRoomState} from '../../Interfaces'
 
-const initState = {
+const initState: chatRoomState = {
     messageBox: [],
-    webSocket: '',
+    webSocket: null,
     onlineCount: 0,
     connectStatus: '',
+    styleMessageBox: true,
+    isMobile: false,
+    drawerOpen: false,
+    userList: {
+        userName:{
+            userName: '',
+            status: ''
+        }
+    },
+    chatPeople: '',
+    newMessageCount: {},
+    imageModalOpen: false,
+    imageEncodeString: '',
 }
 
-const chatRoomReducer = (state = initState, action: any) => {
+const chatRoomReducer = (state = initState, action: any): chatRoomState => {
     switch(action.type){
         case CONNECT_WEB_SOCKET:{
             return {
@@ -35,16 +56,80 @@ const chatRoomReducer = (state = initState, action: any) => {
                 webSocket: action.payload
             }
         }
-        case SET_ONLINE_COUNT:{
+        case DISCONNECT_WEB_SOCKET:{
             return{
                 ...state,
-                onlineCount: action.payload
+                webSocket: null
+            }
+        }
+        case SET_USER_LIST:{
+            return{
+                ...state,
+                userList: action.payload
             }
         }
         case SET_MESSAGE_BOX:{
             return{
                 ...state,
                 messageBox: state.messageBox.concat(action.payload)
+            }
+        }
+        case SET_MESSAGE_BOX_STYLE:{
+            return{
+                ...state,
+                styleMessageBox: action.payload
+            }
+        }
+        case SET_IS_MOBILE:{
+            return{
+                ...state,
+                isMobile: action.payload
+            }
+        }
+        
+        case SET_DRAWER_OPEN:{
+            return{
+                ...state,
+                drawerOpen: action.payload
+            }
+        }
+        case SET_CHAT_PEOPLE:{
+            return {
+                ...state,
+                chatPeople: action.payload
+            }
+        }
+        case SET_NEW_MESSAGE_ALARM:{
+            const {userName} = action.payload
+            let counter = 0;
+            if(action.payload.type === 'reset' || state.chatPeople === userName){
+                return{
+                    ...state,
+                    newMessageCount: {
+                        ...state.newMessageCount,
+                        [userName]: counter
+                    }
+                }
+            }else{
+                Object.entries(state.newMessageCount).forEach(([key, value]) => {
+                    if(key === userName && typeof value === 'number'){
+                        counter = value;
+                    }
+                });
+                return{
+                    ...state,
+                    newMessageCount: {
+                        ...state.newMessageCount,
+                        [userName]: counter + 1
+                    }
+                }
+            }
+        }
+        case SET_IMAGE_MODAL:{
+            return{
+                ...state,
+                imageModalOpen: action.payload.imageModalOpen,
+                imageEncodeString: action.payload.imageEncodeString,
             }
         }
         default: return state;

@@ -1,39 +1,32 @@
 import {
-    SET_USER_ACCOUNT,
-    SET_USER_PASSWORD,
+    SET_LOGIN_ACCOUNT,
+    SET_LOGIN_PASSWORD,
     LOGIN_REQUEST,
     LOGIN_SUCCESS,
     LOGIN_FAIL
 } from '../actionTypes'
+import {loginState} from '../../Interfaces';
 
-const initState: object = {
+const initState: loginState = {
     account: '',
     password: '',
+    message: '',
     status: '',
-    email: '',
-    error: '',
-    userName: ''
 }
 
-const loginReducer = (state: object = initState, action: any) => {
+const loginReducer = (state = initState, action: any): loginState => {
     switch(action.type){
-        case SET_USER_ACCOUNT: {
+        case SET_LOGIN_ACCOUNT: {
             return {...state, account: action.payload};
         }
-        case SET_USER_PASSWORD: {
+        case SET_LOGIN_PASSWORD: {
             return {...state, password: action.payload};
         }
         case LOGIN_REQUEST: {
             return {...state, status: 'loading'};
         }
         case LOGIN_SUCCESS: {
-            return {
-                ...state, 
-                status: 'logined',
-                email: action.payload.email,
-                token: action.payload.token,
-                userName: action.payload.userName
-            };
+            return {...state, status: 'logined'};
         }
         case LOGIN_FAIL: {
             return {

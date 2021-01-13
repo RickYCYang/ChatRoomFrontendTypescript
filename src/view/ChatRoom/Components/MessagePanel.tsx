@@ -1,57 +1,53 @@
-import React, {useState, useEffect} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import {Cell, Grid, Row} from '@material/react-layout-grid';
-import MaterialIcon from '@material/react-material-icon';
-import { getCookie } from '../../../ApiService';
+import React, {useEffect, useRef} from 'react';
+import {useSelector} from 'react-redux';
 import MessageBox from './MessageBox';
-
-interface stateInterface{
-    chatRoomReducer:{
-        webSocket: any,
-        onlineCount: number,
-        messageBox: any
-    }
-}
-
-interface message{
-    userName: string,
-    timestamp: string,
-    message: string
-}
+import {getLocalStorageWithExpiry} from '../../../Services/StorageService';
+import {
+    messageInterface,
+    stateInterface
+} from '../../../Interfaces'; 
 
 const MessagePanel = () => {
-    const {messageBox} = useSelector((state: stateInterface) => state.chatRoomReducer);
-    const userName = getCookie('userName');
-    console.log('userName', userName);
-    let messagesEnd: any;
+    const userName = getLocalStorageWithExpiry('userName');
+    const {messageBox, styleMessageBox, chatPeople} = useSelector((state: stateInterface) => state.chatRoomReducer);
+    const messagePanelRef = useRef<HTMLDivElement>(null);
+    const anchorRef = useRef<HTMLDivElement>(null);
+    const backgroundStyleCss: {style: string, nonStyle: string} = {
+        style: 'style-messagePanel-background', 
+        nonStyle: 'non-style-messagePanel-background'
+    };
 
     useEffect(() => {
-        messagesEnd.scrollIntoView({ behavior: "smooth" });
-    }) 
+        if(messageBox && messagePanelRef.current){
+            if(messagePanelRef.current.offsetHeight < messagePanelRef.current.scrollHeight
+                && messagePanelRef.current.scrollTop + messagePanelRef.current.offsetHeight + 200
+                > messagePanelRef.current.scrollHeight){
+                    messagePanelRef.current.scrollTo({
+                        behavior: "smooth", 
+                        top: messagePanelRef.current?.scrollHeight - messagePanelRef.current.offsetHeight
+                    });
+                }
+        }
+    }, [messageBox]); 
+    
 
     return(
-        <div id="messagePanel-bg">
-            <div id="messagePanel">
+        <div className={(styleMessageBox)? backgroundStyleCss.style: backgroundStyleCss.nonStyle}>
+            <div id="messagePanel" ref={messagePanelRef}>
                 {
-                    
-                    messageBox.map((message: message) => (
-                        <Row key={"row" + message.userName + message.timestamp}>
-                            <Cell columns={12}>
-                                <div className={(userName === message.userName)? "messageBox_mine": "messageBox_other"}>
-                                    <MaterialIcon role="button" icon="account_circle" className="account_icon"/>
-                                    <span>{message.userName}({message.timestamp})</span>
-                                    <div className={(userName === message.userName)? "message_mine": "message_other"}>
-                                        {message.message}
-                                    </div>
-                                </div>
-                            </Cell>
-                        </Row>
+                    messageBox.filter((userMessage:messageInterface) => {
+                        if(chatPeople === 'Public' && userMessage.targetUser === 'Public'){
+                            return userMessage;
+                        }else if((chatPeople === userMessage.targetUser && userName === userMessage.sourceUser) ||
+                                 (chatPeople === userMessage.sourceUser && userName === userMessage.targetUser)
+                                ){
+                                    return userMessage;
+                                }
+                    }).map((userMessage: messageInterface) => (
+                        <MessageBox {...userMessage} key={userMessage.sourceUser + userMessage.timestamp}/>
                     ))
-                    
                 }
-                <div style={{ float:"left", clear: "both" }}
-                    ref={(el) => { messagesEnd = el; }}>
-                </div>
+                <div className='anchor' ref={anchorRef}></div>
             </div>
         </div>
     );

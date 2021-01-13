@@ -1,10 +1,9 @@
-
+@import '~@material/react-typography/dist/typography.css';
 @import '~@material/react-top-app-bar/dist/top-app-bar.css';
 @import '~@material/react-material-icon/dist/material-icon.css';
 @import '~@material/react-drawer/dist/drawer.css';
 @import '~@material/react-list/dist/list.css';
 @import '~@material/react-card/dist/card.css';
-@import '~@material/react-button/dist/button.css';
 @import '~@material/react-layout-grid/dist/layout-grid.css';
 @import '~@material/react-select/dist/select.css';
 @import '~@material/react-menu-surface/dist/menu-surface.css';
@@ -12,199 +11,374 @@
 @import "~@material/react-text-field/dist/text-field.css";
 @import '~@material/react-linear-progress/dist/linear-progress.css';
 @import '~@material/react-top-app-bar/dist/top-app-bar.css';
+@import '~@material/react-switch/dist/switch.css';
+@import "~@material/react-dialog/dist/dialog.css";
+@import "~@material/react-drawer/dist/drawer.css";
+@import '~@material/react-list/dist/list.css';
+@import '~@material/react-radio/dist/radio.css';
+@import '~@material/react-button/dist/button.css';
+@import '~@material/tooltip/dist/mdc.tooltip.css';
+@use "@material/tooltip/styles";
 
 
-#loginCard{
-  width: 500px;
-  margin: 0 auto;
-  margin-top: 50px;
-
-  #tittle{
-      margin: 0 auto;
-      margin-top: 20px;
-      margin-bottom: 20px;
-      width: 400px;
-
-      h1{
-          margin: 0 auto;
-          margin-top: 20px;
-          margin-bottom: 20px;
-      }
-  }
-
-  #logoImg{
-      padding-top: 40%; // 16:9,
-      //margin: 0 auto;
-      height: 30px;
-      border-radius: 10px;
-  }
-
-  #textFieldArea{
-      width: 100%;
-      display: block;
-      text-align: center;
-
-      .textField{
-          width: 80%;
-          margin-bottom: 20px;
-      }
-  }
-
-  .loginBtn{
-      display: inline-block;
-      margin: 0 auto;
-      margin-top: 20px;
-      margin-right: 20px;
-      margin-bottom: 20px;
-      background-color: #2E86C1;
-      border-color: #2E86C1;
-      width: 120px;
-      vertical-align: middle;
-  }
-}
-
-.warnMsg{
-  width: 650px;
-  height: 50px;
-  background-color: #FADBD8;
-  vertical-align: middle;
-  margin: 0 atuo;
-  text-align: center;
-  display: table-cell;
-  vertical-align: middle;
-  font: bold;
-  margin: 0px;
-}
+$theme-color: #2E86C1;
+$mdc-theme-primary: #2E86C1;
+$mdc-theme-background: #f0f3f9;
 
 html, body {
     height: 100%;
-    background-color: #f0f3f9;
+    margin: 0;
+    background-color: $mdc-theme-background;
 }
 
+
 #mainGrid{
-    height: calc( 100vh - 50px );
+    height: 100%;
     padding: 0;
-	width: 100vw;
-    #messagePanel-bg{
-        //border-style: solid;
-        background-color: chartreuse;
-        height: calc( 100vh - 100px );
+    margin: 0;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    
+    .messagePanel-background{
+        flex: auto;
+        height: 100px;
+        border-bottom: solid black 1px;
+    }
+
+    .style-messagePanel-background{
+        @extend .messagePanel-background;
         background-image: url('./Image/sky.jpeg');
         background-repeat: no-repeat;
         background-size: cover;
         color: black;
-        border-bottom: solid black 1px;
+    }
 
-        #messagePanel{
-            //z-index: 110;
-            //position: relative;
-            color: black;
-            width: 100vw;
-            height: calc( 100vh - 100px );
-            //overflow:auto;
-            overflow-y:scroll;
-            background-color: rgba(255, 255, 255, 0.6);
+    .non-style-messagePanel-background{
+        @extend .messagePanel-background;
+        background-color: white;
+        color: black;
+    }
 
-            #messagePanel::-webkit-scrollbar {
-                width: 1em;
-              }
-               
-              #messagePanel::-webkit-scrollbar-track {
-                box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-              }
-               
-              #messagePanel::-webkit-scrollbar-thumb {
-                background-color: darkgrey;
-                outline: 1px solid slategrey;
-              }
+    #messagePanel{
+        padding: 20px 40px 20px 40px;
+        width: calc(100vw - 80px);
+        height: calc(100% - 40px);
+        overflow-y: auto;
+        background-color: rgba(255, 255, 255, 0.6);
 
+        .anchor{
+            height: 0;
+        }
 
-            .messageBox{
-                margin: 10px;
-                margin-left: 100px;
-                margin-right: 100px;
-                margin-top: 20px;
+        .message-box{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin: 0 auto;
+            margin-bottom: 30px;
+
+            i{
+                color: darkcyan;
             }
+        }
 
-            .messageBox_mine{
-                @extend .messageBox;
-                float: right;
-            }
+        .message-box-mine{
+            @extend .message-box;
+            align-items: flex-end;
+        }
 
-            .messageBox_other{
-                @extend .messageBox;
-                float: left;
-            }
+        .message-box-other{
+            @extend .message-box;
+            align-items: flex-start;
+        }
+
+        .message-box-userInfo{
+            font-weight: bold;
+            font-size: 15px;
 
             .account_icon{
                 vertical-align: middle;
                 margin-right: 10px;
             }
-
-            .message{
-                vertical-align: middle;
-                margin-bottom: 5px;
-                margin-top: 2px;
-                border-radius: 20px 20px 20px 20px;
-                padding: 10px;
-                padding-left: 20px;
-                padding-right: 20px;
-            }
-
-            .message_mine{
-                //display: inline-block;
-                @extend .message;
-                background-color: rgb(50, 205, 50);
-            }
-            .message_other{
-                //display: inline-block;
-                @extend .message;
-                background-color: rgb(255, 255, 255);
-            }
         }
+
+        .message-text{
+            vertical-align: middle;
+            margin-top: 5px;
+            border-radius: 20px 20px 20px 20px;
+            padding: 10px;
+            padding-left: 20px;
+            padding-right: 20px;
+            max-width: calc(60% - 40px);
+            height: auto;
+            word-wrap:break-word;
+            word-break:break-all;
+            overflow: hidden;
+        }
+
+        .style-message-text-mine{
+            @extend .message-text;
+            background-color: rgb(50, 205, 50);
+        }
+
+        .style-message-text-other{
+            @extend .message-text;
+            background-color: rgb(255, 255, 255);
+        }
+
+        .message-image{
+            max-width: 300px;
+            height: auto;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .message-image:hover {opacity: 0.7;}
     }
+
     #messageSender{
-        height: 40px;
+        height: 50px;
+        flex: none;
         vertical-align: middle;
-        display: table;
+        display: flex;
 
         #msgTextEditInput{
-            height: 50px;
+            flex: auto;
         }
         #msgTextEdit{
-            width: calc( 100vw - 100px );
             height: 50px;
-            display: table-cell;
+            flex: auto;
         }
-        .wrapper-div {
-            display: table-cell;
-            vertical-align: middle;
-        }
-        #msgSendBtn{
+        @mixin msgSendBtn($color: yellow){
+            flex: none;
             width: 100px;
             height: 50px;
-            background-color: #01579B;
+            background-color: $color; //#01579B;
             border-style: none;
         }
-        .mdc-text-field__input {
-            border-bottom-color: rgba(0, 0, 255, 0.42);
+        #txtSendBtn{
+            @include msgSendBtn($theme-color);
         }
     }
 }
 
 .mdc-top-app-bar, .mdc-top-app-bar__row{
-    height: 50px;
-    background-color: rgba(8, 46, 84, 0.8);
+    background-color: rgba(8, 46, 84, 0.9);
     font-weight: bold;
+    height: 65px;
     padding: 0;
-    margin-bottom: 10px;
-    max-width: 100vw;
+    margin: 0;
 }
 
-.mdc-top-app-bar--fixed-adjust{
-    padding-top: 50px;
-    max-width: 100vw;
+.mdc-top-app-bar--fixed-adjust, .mdc-drawer--dismissible{
+    height: calc(100vh - 65px);
 }
 
+.mdc-top-app-bar__title{
+    display: flex;
+    align-items: center;
 
+    i{
+        margin-left: 20px;
+    }
+}
 
+.mdc-drawer--dismissible{
+    border: darkgray;
+    border-style: solid;
+    border-width: 1px;
+}
+
+#mode-switch-label{
+    margin-left: 20px;
+    font-weight: bold;
+}
+
+#signLoginContainer{
+    margin: 0;
+    vertical-align: middle;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    margin-top: 50px;
+  
+    #signLoginCard{
+        padding: 50px;
+        width: 600px;
+    }
+
+    .tittle{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 30px;
+        font-weight: bold;
+        color: $theme-color; //#2E86C1;
+        flex-direction: row;
+
+        i{
+            font-size: 60px;
+            color: $theme-color; //#2E86C1;
+        }
+    }
+
+    #login_logo{
+        padding-top: 30%; // 16:9,
+        margin: 0 auto;
+        width: 90%;
+        height: 50px;
+        border-radius: 10px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .signup_login_info{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .textField{
+        margin-bottom: 15px;
+        width: 90%;
+    }
+
+    .mdc-card__action-buttons{
+        width: 100%;
+    }
+
+    .signup_login_btn{
+        background-color: $theme-color; //#2E86C1;
+        border-color: $theme-color; //#2E86C1;
+        margin: 10px;
+    }
+
+    .separate_line{
+        border-color: $theme-color; //#2E86C1;
+        width: 100%;
+    }
+
+    .warnMsg{
+        width: 100%;
+        background-color: #FADBD8;
+        margin: 0 atuo;
+        text-align: center;
+        font: bold;
+    }
+}
+
+#signupDialog{
+    .signup_login_btn{
+        background-color: $theme-color; //#2E86C1;
+        border-color: $theme-color; //#2E86C1;
+        margin: 10px;
+    }
+}
+
+.mdc-list-item--selected{
+    background-color: lightblue;
+}
+
+.drawer-title{
+    //color: darkblue;
+    margin: 0;
+    text-align: center;
+    font-weight: bold;
+}
+
+#drawer-greeting{
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.message-alarm{
+    min-width: 20px;
+    height: 20px;
+    background: red;
+    box-sizing: border-box;
+    margin-left: 20px;
+    color: white;
+    font-size: 10px;
+    text-align: center;
+    line-height: 20px;
+    padding: 0 5px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.mdc-top-app-bar__section{
+    flex-basis: 33%;
+}
+
+#chat-people-block{
+    margin: 0 auto;
+    padding: 0px 10px;
+    border-radius: 10px;
+    border: 2px white solid;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    #chat-people{
+        font-size: 20px;
+        line-height: 30px;
+        margin: 0 ;
+    }
+
+    #online-people{
+        margin: 0 ;
+        font-size: 14px;
+        line-height: 20px;
+    }
+}
+
+  
+  /* The Modal (background) */
+  .modal {
+    display: block; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    box-sizing: border-box;
+    z-index: 5; /* Sit on top */
+    padding-top: 20px; /* Location of the box */
+    padding-bottom: 80px;
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+
+    .modal-content{
+        margin: auto;
+        display: block;
+        width: 100%;
+        height: auto;
+        max-width: 700px;
+        overflow: auto;
+    }
+
+    /* The Close Button */
+    .close {
+        position: absolute;
+        top: 30px;
+        right: 35px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+    
+    .close:hover, .close:focus {
+        color: #bbb;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+}
