@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Card, {
     CardPrimaryContent,
@@ -15,14 +15,18 @@ import {
     SET_SIGNUP_CONFIRM_PASSWORD,
     SET_SIGNUP_USERNAME,
     SET_SIGNUP_MESSAGE,
+    SET_SIGNUP_UPLOAD_FILE_NAME,
     SIGNUP_REQUEST
 } from '../../redux/actionTypes';
 import SignupDialog from './Components/SignupDialog';
 import {stateInterface} from '../../Interfaces';
+import {compressImage} from './../../Services/CommonService';
 
 const Signup = () => {
     const dispatch = useDispatch();
-    const {account, password, confirmPassword, userName, status, message} = useSelector((state: stateInterface) => state.signupReducer);
+    const uploadPhotoRef = useRef<HTMLInputElement>(null);
+    const photo = useRef<File | null>(null);
+    const {account, password, confirmPassword, userName, status, message, fileName} = useSelector((state: stateInterface) => state.signupReducer);
 
     const inputHandler = (e: any): void => {
         const {id, value} = e.currentTarget;
@@ -55,6 +59,7 @@ const Signup = () => {
     }
 
     const signupHandler = (): void => {
+        console.log('photo', photo.current);
         console.log('signup', account, password, confirmPassword, userName);
         if(!account || !password || !confirmPassword || !userName){
             dispatch({
@@ -77,14 +82,39 @@ const Signup = () => {
             });
             return;
         }
+        if(!photo.current){
+            dispatch({
+                type: SET_SIGNUP_MESSAGE,
+                payload: 'Please upload one photo'
+            });
+            return;
+        }
+        
         dispatch({
             type: SIGNUP_REQUEST,
             payload: {
                 account: account,
                 password: password,
-                userName: userName
+                userName: userName,
+                photo: photo.current
             }   
         });
+    }
+
+    const photoUploadHandler = async() => {
+        if(uploadPhotoRef.current?.files && uploadPhotoRef.current?.files.length > 0){
+            photo.current = uploadPhotoRef.current.files[0];
+            dispatch({
+                type: SET_SIGNUP_UPLOAD_FILE_NAME,
+                payload: photo.current.name
+            });
+        }else {
+            photo.current = null;
+            dispatch({
+                type: SET_SIGNUP_UPLOAD_FILE_NAME,
+                payload: ''
+            });
+        }
     }
 
     return (
@@ -174,6 +204,26 @@ const Signup = () => {
                                 onChange={inputHandler} 
                             />
                         </TextField>
+                        <div className='textField'>
+                            <div className='upload-image-div' style={{borderBottom: '1px solid darkgray'}}>
+                                <Button 
+                                    className="upload-image-btn"
+                                    outlined={true} 
+                                    raised={true} 
+                                    icon={<MaterialIcon role="button" icon="image" />}
+                                    onClick={() => {uploadPhotoRef.current?.click();}}
+                                >Photo
+                                </Button>
+                                <input 
+                                    type='file' 
+                                    className={'input-element'} 
+                                    ref={uploadPhotoRef} 
+                                    accept="image/*" 
+                                    onChange={photoUploadHandler}
+                                />
+                                <span id='upload-photo-name'>{fileName}</span>
+                            </div>
+                        </div>
                         <div className='signup_btn_block'>
                             <Button 
                                 className="signup_login_btn"

@@ -16,7 +16,10 @@ import {
     LOGIN_REQUEST
 } from '../../redux/actionTypes';
 import {getLocalStorageWithExpiry} from '../../Services/StorageService';
-import {stateInterface} from '../../Interfaces';
+import {
+    stateInterface,
+    keyInterface
+} from '../../Interfaces';
 
 
 const Login = () => {
@@ -58,6 +61,19 @@ const Login = () => {
             dispatch(push('/'));
         }
     }, [token]);
+
+    const enterClick = (key: keyInterface): void => {
+        if(key.key === 'Enter'){
+            loginHandler();
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener('keypress', enterClick);
+        return () => {
+            document.removeEventListener('keypress', enterClick);
+        }
+    }, [account, password]);
 
     return(
         <div id='signLoginContainer'>

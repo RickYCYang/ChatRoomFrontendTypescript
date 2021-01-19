@@ -5,8 +5,7 @@ import {
 } from '../../redux/actionTypes';
 import {
     listenUserList,
-    listenPublicMessage,
-    listenPrivateMessage
+    listenNewMessage,
 } from '../../Services/WebSocketService'
 import MessagePanel from './Components/MessagePanel';
 import MessageSender from './Components/MessageSender';
@@ -19,9 +18,8 @@ const ChatRoom = () => {
     ///Connect web socket
     useEffect(() => {
         if(webSocket){
-            listenPublicMessage(webSocket, dispatch, isMobile);
-            listenPrivateMessage(webSocket, dispatch, isMobile);
             listenUserList(webSocket, dispatch);
+            listenNewMessage(webSocket, dispatch, isMobile);
         }else{
             dispatch({type: CONNECT_WEB_SOCKET});
         }

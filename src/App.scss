@@ -31,6 +31,10 @@ html, body {
     background-color: $mdc-theme-background;
 }
 
+#logo{
+    background-image: url('./Image/chat.svg');
+    background-repeat: no-repeat;
+}
 
 #mainGrid{
     height: 100%;
@@ -190,6 +194,10 @@ html, body {
     border-width: 1px;
 }
 
+.input-element{
+    display: none;
+}
+
 #mode-switch-label{
     margin-left: 20px;
     font-weight: bold;
@@ -245,6 +253,28 @@ html, body {
     .textField{
         margin-bottom: 15px;
         width: 90%;
+    }
+
+    .upload-image-div{
+        width: 100%;
+        display: flex;
+        justify-content: left;
+        align-items: center;
+        border-bottom: 1px solid darkgray;
+    }
+
+    .upload-image-btn{
+        @extend .signup_login_btn;
+        width: 85px; 
+        height: 30px; 
+        font-size: 13px;
+        margin-left: 0;
+    }
+
+    #upload-photo-name{
+        margin-left: 10px;
+        font-size: 12px;
+        color: gray;
     }
 
     .mdc-card__action-buttons{
@@ -339,9 +369,9 @@ html, body {
 }
 
   
-  /* The Modal (background) */
-  .modal {
-    display: block; /* Hidden by default */
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     box-sizing: border-box;
     z-index: 5; /* Sit on top */
@@ -352,7 +382,6 @@ html, body {
     width: 100%; /* Full width */
     height: 100%; /* Full height */
     overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
 
     .modal-content{
@@ -361,7 +390,13 @@ html, body {
         width: 100%;
         height: auto;
         max-width: 700px;
-        overflow: auto;
+        animation-name: zoom;
+        animation-duration: 0.6s;
+    }
+
+    @keyframes zoom {
+        from {transform: scale(0)}
+        to {transform: scale(1)}
     }
 
     /* The Close Button */
@@ -374,7 +409,7 @@ html, body {
         font-weight: bold;
         transition: 0.3s;
     }
-    
+
     .close:hover, .close:focus {
         color: #bbb;
         text-decoration: none;

@@ -19,6 +19,7 @@ const TopBar = () => {
     const dispatch = useDispatch();
     const {drawerOpen, webSocket, chatPeople, userList} = useSelector((state: stateInterface) => state.chatRoomReducer);
     
+    /// Turn on/off drawer
     const showDrawerHandler = () => {
         dispatch({
             type: SET_DRAWER_OPEN,

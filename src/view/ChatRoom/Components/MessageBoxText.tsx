@@ -10,7 +10,7 @@ import {
 } from '../../../Interfaces';
 
 const MessageBoxText = (userMessage: messageInterface) => {
-    const {styleMessageBox} = useSelector((state: stateInterface) => state.chatRoomReducer);
+    const styleMessageBox = useSelector((state: stateInterface) => state.chatRoomReducer.styleMessageBox);
     const dispatch = useDispatch();
     const userName = getLocalStorageWithExpiry('userName');
 

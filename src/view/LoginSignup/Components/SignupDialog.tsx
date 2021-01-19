@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import Dialog, {
     DialogTitle,
     DialogContent,
@@ -8,13 +8,23 @@ import Button from '@material/react-button';
 import MaterialIcon from '@material/react-material-icon';
 import { useDispatch, useSelector } from 'react-redux';
 import { push } from 'connected-react-router';
-import {stateInterface} from '../../../Interfaces';
+import { stateInterface } from '../../../Interfaces';
+import { SET_SUCCESS_DIALOG } from '../../../redux/actionTypes'
 
 const SignupDialog = () => {
     const dispatch = useDispatch();
-    const {status} = useSelector((state: stateInterface) => state.signupReducer);
+    const {successDialog} = useSelector((state: stateInterface) => state.signupReducer);
+
+    const returnLoginHandler = useCallback((e: any) => {
+        dispatch(push('login'));
+        dispatch({
+            type: SET_SUCCESS_DIALOG,
+            payload: false
+        })
+    }, [successDialog]);
+
     return(
-        <Dialog id='signupDialog' open={status==='success'}>
+        <Dialog id='signupDialog' open={successDialog}>
             <DialogTitle>Success</DialogTitle>
             <DialogContent>
                 <div>Signup successfully</div>
@@ -25,9 +35,7 @@ const SignupDialog = () => {
                     outlined={true} 
                     raised={true} 
                     icon={<MaterialIcon role="button" icon="account_box" />}
-                    onClick={() => {
-                        dispatch(push('login'));
-                    }}
+                    onClick={returnLoginHandler}
                 >Login
                 </Button>
             </DialogFooter>

@@ -50,8 +50,8 @@ export const listenUserList = (webSocket: any, dispatch: any) => {
     })
 }
 
-export const listenPublicMessage = (webSocket: any, dispatch: any, isMobile: boolean) => {   
-    webSocket.on('newPublicMessage', (userMessage: messageInterface) => {   
+export const listenNewMessage = (webSocket: any, dispatch: any, isMobile: boolean) => {   
+    webSocket.on('newMessage', (userMessage: messageInterface) => {   
         setNewMessageAlarm(dispatch, userMessage.sourceUser, userMessage.targetUser);
         dispatch({
             type: SET_MESSAGE_BOX,
@@ -61,22 +61,6 @@ export const listenPublicMessage = (webSocket: any, dispatch: any, isMobile: boo
             new Notification(userMessage.sourceUser, {
                 body: userMessage.message,
                 icon: require('../Image/message.png'),
-            }); 
-        }
-    });
-}
-
-export const listenPrivateMessage = (webSocket: any, dispatch: any, isMobile: boolean) => {
-    webSocket.on('newPrivateMessage', (userMessage: messageInterface) => { 
-        setNewMessageAlarm(dispatch, userMessage.sourceUser, userMessage.targetUser);
-        dispatch({
-            type: SET_MESSAGE_BOX,
-            payload: userMessage
-        });
-       if(!document.hasFocus() && !isMobile){  
-        new Notification(userMessage.sourceUser, {
-            body: userMessage.message,
-            icon: require('../Image/message.png'),
             }); 
         }
     });

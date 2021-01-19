@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useRef, useEffect} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Card, {
     CardPrimaryContent,
@@ -10,88 +10,112 @@ import TextField, {Input} from '@material/react-text-field';
 import MaterialIcon from '@material/react-material-icon';
 import { push } from 'connected-react-router';
 import {
-    SET_SIGNUP_ACCOUNT,
-    SET_SIGNUP_PASSWORD,
-    SET_SIGNUP_CONFIRM_PASSWORD,
-    SET_SIGNUP_USERNAME,
-    SET_SIGNUP_MESSAGE,
-    SIGNUP_REQUEST
+    GET_USER_ACCOUNT_REQUEST,
+    SET_EDIT_USER_NAME,
+    SET_EDIT_PASSWORD,
+    SET_EDIT_CONFIRM_PASSWORD,
+    SET_EDIT_FILE_NAME,
+    SET_EDIT_MESSAGE,
+    EDIT_USER_INFO_REQUEST
 } from '../../redux/actionTypes';
 import SignupDialog from './Components/SignupDialog';
 import {stateInterface} from '../../Interfaces';
+import {getLocalStorageWithExpiry} from '../../Services/StorageService';
 
 const Edit = () => {
+    const uid: string = getLocalStorageWithExpiry('uid');
+    const uploadPhotoRef = useRef<HTMLInputElement>(null);
+    const newPhoto = useRef<File | null>(null);
     const dispatch = useDispatch();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const {account, confirmPassword, userName, status, message} = useSelector((state: stateInterface) => state.signupReducer);
+    const {
+        account, 
+        newPassword, 
+        confirmNewPassword,
+        newUserName,
+        newPhotoFileName,
+        successDialog,
+        message,
+        status
+    }  = useSelector((state: stateInterface) => state.editReducer);
+
+    useEffect(() => {
+        if(!uid){
+            dispatch(push('/login'));
+        }
+        dispatch({
+            type: GET_USER_ACCOUNT_REQUEST,
+            payload: {
+                uid: uid
+            }
+        })
+    }, []);
 
     const inputHandler = (e: any): void => {
         const {id, value} = e.currentTarget;
-        /*
         switch(id){
-            case "account":
+            case "newUserName":
                 dispatch({
-                    type: SET_SIGNUP_ACCOUNT,
+                    type: SET_EDIT_USER_NAME,
                     payload: value,
                 });
                 break;
-            case "password":
+            case "newPassword":
                 dispatch({
-                    type: SET_SIGNUP_PASSWORD,
+                    type: SET_EDIT_PASSWORD,
                     payload: value,
                 });
                 break;
-            case "confirmPassword":
+            case "confirmNewPassword":
                 dispatch({
-                    type: SET_SIGNUP_CONFIRM_PASSWORD,
+                    type: SET_EDIT_CONFIRM_PASSWORD,
                     payload: value,
                 });
                 break;
-            case "userName":
-                dispatch({
-                    type: SET_SIGNUP_USERNAME,
-                    payload: value,
-                });
-                break;
-               
         }
-         */
     }
 
-    const signupHandler = (): void => {
-        /*
-        console.log('signup', account, password, confirmPassword, userName);
-        if(!account || !password || !confirmPassword || !userName){
+    const photoUploadHandler = () => {
+        if(uploadPhotoRef.current?.files && uploadPhotoRef.current?.files.length > 0){
+            newPhoto.current = uploadPhotoRef.current.files[0];
             dispatch({
-                type: SET_SIGNUP_MESSAGE,
-                payload: 'Please fill in all information'
+                type: SET_EDIT_FILE_NAME,
+                payload: newPhoto.current.name
+            });
+        }else {
+            newPhoto.current = null;
+            dispatch({
+                type: SET_EDIT_FILE_NAME,
+                payload: ''
+            });
+        }
+    }
+
+    const updateHandler = (): void => {        
+        if(!newUserName && !newPassword && !confirmNewPassword && !newPhoto.current){
+            dispatch({
+                type: SET_EDIT_MESSAGE,
+                payload: 'No information has been update'
             });
             return;
         }
-        if(confirmPassword !== password){
+        
+        if(newPassword !== confirmNewPassword){
             dispatch({
-                type: SET_SIGNUP_MESSAGE,
+                type: SET_EDIT_MESSAGE,
                 payload: 'Passwords are not same!'
             });
             return;
         }
-        if(account.indexOf('@') <= 0){
-            dispatch({
-                type: SET_SIGNUP_MESSAGE,
-                payload: 'Invalid email!'
-            });
-            return;
-        }
+        
         dispatch({
-            type: SIGNUP_REQUEST,
+            type: EDIT_USER_INFO_REQUEST,
             payload: {
-                account: account,
-                password: password,
-                userName: userName
+                uid: uid,
+                userName: newUserName,
+                password: newPassword,
+                photo: newPhoto.current
             }   
         });
-        */
     }
 
     return (
@@ -108,88 +132,101 @@ const Edit = () => {
                         <TextField
                             label='Email'
                             className="textField" 
-                            //helperText={<HelperText>Help Me!</HelperText>}
-                            onTrailingIconSelect={(): void => {
-                                dispatch({
-                                    type: SET_SIGNUP_ACCOUNT,
-                                    payload: ''
-                                })
-                            }}
-                            trailingIcon={<MaterialIcon role="button" icon="delete"/>}
+                            disabled={true}
                         >
                             <Input
                                 id="account"
                                 type="account"
                                 value={account}
+                                disabled={true}
                                 onChange={inputHandler} 
                             />
                         </TextField>
                         <TextField
-                            label='Nick Name'
+                            label='New Nick Name (Optional)'
                             className="textField" 
                             //helperText={<HelperText>Help Me!</HelperText>}
                             onTrailingIconSelect={(): void => {
                                 dispatch({
-                                    type: SET_SIGNUP_USERNAME,
+                                    type: SET_EDIT_USER_NAME,
                                     payload: ''
                                 })
                             }}
                             trailingIcon={<MaterialIcon role="button" icon="delete"/>}
                         >
                             <Input
-                                id="userName"
+                                id="newUserName"
                                 type="string"
-                                value={userName}
+                                value={newUserName}
                                 onChange={inputHandler} 
                             />
                         </TextField>
                         <TextField
-                            label='Password'
+                            label='New Password (Optional)'
                             className="textField"  
                             //helperText={<HelperText>Help Me!</HelperText>}
-                            onTrailingIconSelect={ (): void => {
+                            onTrailingIconSelect={(): void => {
                                 dispatch({
-                                    type: SET_SIGNUP_PASSWORD,
+                                    type: SET_EDIT_PASSWORD,
                                     payload: ''
                                 })
                             }}
                             trailingIcon={<MaterialIcon role="button" icon="delete"/>}
                         >
                             <Input
-                                id="password"
+                                id="newPassword"
                                 type="password"
-                                value={password}
+                                value={newPassword}
                                 onChange={inputHandler} 
                             />
                         </TextField>
                         <TextField
-                            label='Confirm Password'
+                            label='Confirm Password (Optional)'
                             className="textField"  
                             //helperText={<HelperText>Help Me!</HelperText>}
-                            onTrailingIconSelect={ (): void => {
+                            onTrailingIconSelect={(): void => {
                                 dispatch({
-                                    type: SET_SIGNUP_CONFIRM_PASSWORD,
+                                    type: SET_EDIT_CONFIRM_PASSWORD,
                                     payload: ''
                                 })
                             }}
                             trailingIcon={<MaterialIcon role="button" icon="delete"/>}
                         >
                             <Input
-                                id="confirmPassword"
+                                id="confirmNewPassword"
                                 type="password"
-                                value={confirmPassword}
+                                value={confirmNewPassword}
                                 onChange={inputHandler} 
                             />
                         </TextField>
+                        <div className='textField'>
+                            <div className='upload-image-div' style={{borderBottom: '1px solid darkgray'}}>
+                                <Button 
+                                    className="upload-image-btn"
+                                    outlined={true} 
+                                    raised={true} 
+                                    icon={<MaterialIcon role="button" icon="image" />}
+                                    onClick={() => {uploadPhotoRef.current?.click();}}
+                                >Photo
+                                </Button>
+                                <input 
+                                    type='file' 
+                                    className={'input-element'} 
+                                    ref={uploadPhotoRef} 
+                                    accept="image/*" 
+                                    onChange={photoUploadHandler}
+                                />
+                                <span id='upload-photo-name'>{newPhotoFileName}</span>
+                            </div>
+                        </div>
                         <div className='signup_btn_block'>
                             <Button 
                                 className="signup_login_btn"
                                 outlined={true} 
                                 raised={true} 
-                                disabled={true}
                                 icon={<MaterialIcon role="button" icon="person_add" />}
-                                onClick={signupHandler}
-                            >Save
+                                onClick={updateHandler}
+                            >Update
                             </Button>
                             <Button 
                                 className="signup_login_btn"
@@ -197,7 +234,7 @@ const Edit = () => {
                                 raised={true} 
                                 icon={<MaterialIcon role="button" icon="keyboard_backspace" />}
                                 onClick={() => {
-                                    dispatch(push('login'));
+                                    dispatch(push('/'));
                                 }}
                             >Back
                             </Button>

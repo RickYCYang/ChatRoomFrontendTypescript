@@ -58,21 +58,10 @@ const MessageSender = () => {
         if(fileUpload.current?.files !== null && fileUpload.current?.files !== undefined){
             const file = fileUpload.current.files[0];
             //Compress Image at first
-            //console.log('originalFile instanceof Blob', file instanceof Blob); // true
-            //console.log(`originalFile size ${file.size / 1024 / 1024} MB`);
-            // const options = {
-            //     maxSizeMB: 1,
-            //     maxWidthOrHeight: 1920,
-            //     useWebWorker: true
-            // }
             try {
-            const compressedFile = await compressImage(file);
-            //console.log('compressedFile instanceof Blob', compressedFile instanceof Blob); // true
-            //console.log(`compressedFile size ${compressedFile.size / 1024 / 1024} MB`); // smaller than maxSizeMB
-            /* Convert Image to base64 decode */
-            convertFile(compressedFile).then((fileBase64: string) => {
-                //console.log('image Decode', fileBase64);
-                //console.log('file Name', file.name);
+                const compressedFile = await compressImage(file);
+                /* Convert Image to base64 decode */
+                convertFile(compressedFile).then((fileBase64: string) => {
                 const timestamp: string = getTimeStamp();
                 sendNewMessage(webSocket, 'image', userName, chatPeople, fileBase64, timestamp);
             }).catch(err => console.log('error', err));
@@ -97,7 +86,7 @@ const MessageSender = () => {
                     onChange={messageHandler} 
                 />
             </TextField>    
-            <input type='file' style={{display: 'none'}} ref={fileUpload} accept="image/*" onChange={fileUploadHandler}/> 
+            <input type='file' className={'input-element'} ref={fileUpload} accept="image/*" onChange={fileUploadHandler}/> 
             <Button 
                 id="txtSendBtn"
                 outlined={true} 

@@ -25,7 +25,8 @@ const initState: chatRoomState = {
     userList: {
         userName:{
             userName: '',
-            status: ''
+            status: '',
+            photo: ''
         }
     },
     chatPeople: '',

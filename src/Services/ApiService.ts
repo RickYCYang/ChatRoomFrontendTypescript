@@ -7,7 +7,7 @@ import {
     getCookie
 } from './StorageService';
 
-import axios from 'axios';
+import axios, {AxiosRequestConfig} from 'axios';
 
 axios.defaults.baseURL = serverHostName;
 axios.defaults.headers.post['Accept'] = 'application/json';
@@ -17,12 +17,35 @@ axios.defaults.xsrfCookieName = 'XSRF-TOKEN'; // default
 axios.defaults.xsrfHeaderName = 'X-XSRF-TOKEN'; // default
 
 
-export const axiosGet = (url: string): object => {
-    return axios.get(url);
+export const axiosGet = (url: string, params: object): object => {
+    return axios.get(url, {params: params});
 }
 
 export const axiosPost = (url: string, data: object): object => {
     return axios.post(url, data);
+}
+
+export const axiosPostFormData = (url: string, data: any): object => {
+    console.log('data', data);
+    let config: AxiosRequestConfig = {
+        headers : {
+          'Content-Type' : 'multipart/form-data'
+        }
+    }
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]: any) => {
+        //console.log(key, value);
+        formData.append(key, value);
+    });
+    /*
+    formData.append('photo', data.photo);
+    formData.append('email', data.email);
+    formData.append('password', data.password);
+    formData.append('userName', data.userName);
+    */
+    //console.log('formData', formData.values());
+    //formData.append('file', yourFile);
+    return axios.post(url, formData, config);
 }
 
 export default axios;

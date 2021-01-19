@@ -9,7 +9,9 @@ import {
 
 const MessagePanel = () => {
     const userName = getLocalStorageWithExpiry('userName');
-    const {messageBox, styleMessageBox, chatPeople} = useSelector((state: stateInterface) => state.chatRoomReducer);
+    const messageBox = useSelector((state: stateInterface) => state.chatRoomReducer.messageBox);
+    const styleMessageBox = useSelector((state: stateInterface) => state.chatRoomReducer.styleMessageBox);
+    const chatPeople = useSelector((state: stateInterface) => state.chatRoomReducer.chatPeople);
     const messagePanelRef = useRef<HTMLDivElement>(null);
     const anchorRef = useRef<HTMLDivElement>(null);
     const backgroundStyleCss: {style: string, nonStyle: string} = {

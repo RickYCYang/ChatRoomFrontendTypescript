@@ -13,6 +13,7 @@ import {
   setLocalStorageWithExpiry,
   //getLocalStorageWithExpiry,
   removeLocalStorage,
+  setCookie
 } from '../../Services/StorageService'
 
 import {
@@ -34,9 +35,11 @@ export function* loginRequest(action: any) {
     })
   }else if(result.data.status === "success"){
     console.log('success:', result);
-    const {token, userName} = result.data;
+    const {token, userName, uid} = result.data;
     yield setLocalStorageWithExpiry('token', token, 1);
     yield setLocalStorageWithExpiry('userName', userName, 1);
+    yield setLocalStorageWithExpiry('uid', uid, 1);
+    yield setCookie('XSRF-TOKE', token);
     yield put({ type: LOGIN_SUCCESS });
     yield put(push('/'));
   }

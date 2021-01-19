@@ -2,7 +2,8 @@
 import { put } from 'redux-saga/effects'
 import { push } from 'connected-react-router'
 import {
-  axiosPost
+  axiosPost,
+  axiosPostFormData
 } from '../../Services/ApiService';
 import {
   SIGNUP_SUCCESS,
@@ -11,8 +12,17 @@ import {
 
 
 export function* signupRequest(action: any) {
-  const {account, password, userName} = action.payload;
-  const result = yield axiosPost("signup", {email: account, password: password, userName: userName});
+  console.log('action.payload', action.payload);
+  const {account, password, userName, photo} = action.payload;  
+  const result = yield axiosPostFormData(
+    "signup", 
+    {
+      email: account, 
+      password: password, 
+      userName: userName, 
+      photo: photo
+    }
+  );
   const {status, message} = result.data;
   console.log('result', result);
   if(status === "error"){

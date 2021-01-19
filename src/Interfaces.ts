@@ -9,7 +9,8 @@ export interface messageInterface {
 export interface stateInterface {
     chatRoomReducer: chatRoomState,
     signupReducer: signupState,
-    loginReducer: loginState
+    loginReducer: loginState,
+    editReducer: editState
 }
 
 export interface keyInterface{
@@ -25,7 +26,8 @@ export interface inputEventInterface{
 export interface userListInterface{
     userName:{
         userName: string,
-        status: string
+        status: string,
+        photo: string
     }
 }
 
@@ -57,5 +59,18 @@ export interface signupState {
     password: string,
     confirmPassword: string,
     userName: string,
-    message: string
+    message: string,
+    fileName: string,
+    successDialog: boolean
+}
+
+export interface editState {
+    account: string,
+    newPassword: string,
+    newUserName: string,
+    confirmNewPassword: string,
+    newPhotoFileName: string,
+    successDialog: boolean,
+    message: string,
+    status: string,
 }
