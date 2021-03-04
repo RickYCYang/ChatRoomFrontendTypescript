@@ -1,19 +1,18 @@
 import {
     GET_USER_ACCOUNT_SUCCESS,
     GET_USER_ACCOUNT_FAIL,
+    EDIT_USER_INFO_SUCCESS,
+    EDIT_USER_INFO_FAIL,
     SET_EDIT_USER_NAME,
-    SET_EDIT_PASSWORD,
-    SET_EDIT_CONFIRM_PASSWORD,
     SET_EDIT_FILE_NAME,
-    SET_EDIT_MESSAGE
+    SET_EDIT_MESSAGE,
+    SET_EDIT_SUCCESS_DIALOG
 } from '../actionTypes'
 import {editState} from '../../Interfaces';
 
 const initState: editState = {
     account: '',
-    newPassword: '',
     newUserName: '',
-    confirmNewPassword: '',
     newPhotoFileName: '',
     successDialog: false,
     message: '',
@@ -41,16 +40,15 @@ const editReducer = (state = initState, action: any): editState => {
                 newUserName: action.payload
             }
         }
-        case SET_EDIT_PASSWORD: {
+        case EDIT_USER_INFO_FAIL: {
             return {
-                ...state,
-                newPassword: action.payload
+                ...state
             }
         }
-        case SET_EDIT_CONFIRM_PASSWORD: {
+        case EDIT_USER_INFO_SUCCESS: {
             return {
                 ...state,
-                confirmNewPassword: action.payload
+                successDialog: true
             }
         }
         case SET_EDIT_FILE_NAME: {
@@ -63,6 +61,12 @@ const editReducer = (state = initState, action: any): editState => {
             return {
                 ...state,
                 message: action.payload
+            }
+        }
+        case SET_EDIT_SUCCESS_DIALOG: {
+            return {
+                ...state,
+                successDialog: action.payload
             }
         }
         default: return state;

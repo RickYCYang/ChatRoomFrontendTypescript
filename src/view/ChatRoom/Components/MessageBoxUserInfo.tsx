@@ -6,7 +6,9 @@ const MessageBoxUserInfo = (userMessage: messageInterface) => {
     return(
         <div className='message-box-userInfo'>
             <MaterialIcon role="button" icon="account_circle" className="account_icon"/>
-            <span>{userMessage.sourceUser}({userMessage.timestamp})</span>
+            <span data-testid="userNname-timestamp">
+                {userMessage.sourceUser}({userMessage.timestamp})
+            </span>
         </div>
     );
 }

@@ -12,15 +12,13 @@ import { push } from 'connected-react-router';
 import {
     GET_USER_ACCOUNT_REQUEST,
     SET_EDIT_USER_NAME,
-    SET_EDIT_PASSWORD,
-    SET_EDIT_CONFIRM_PASSWORD,
     SET_EDIT_FILE_NAME,
     SET_EDIT_MESSAGE,
     EDIT_USER_INFO_REQUEST
 } from '../../redux/actionTypes';
-import SignupDialog from './Components/SignupDialog';
 import {stateInterface} from '../../Interfaces';
 import {getLocalStorageWithExpiry} from '../../Services/StorageService';
+import EditDialog from './Components/EditDialog'
 
 const Edit = () => {
     const uid: string = getLocalStorageWithExpiry('uid');
@@ -29,8 +27,6 @@ const Edit = () => {
     const dispatch = useDispatch();
     const {
         account, 
-        newPassword, 
-        confirmNewPassword,
         newUserName,
         newPhotoFileName,
         successDialog,
@@ -50,28 +46,12 @@ const Edit = () => {
         })
     }, []);
 
-    const inputHandler = (e: any): void => {
-        const {id, value} = e.currentTarget;
-        switch(id){
-            case "newUserName":
-                dispatch({
-                    type: SET_EDIT_USER_NAME,
-                    payload: value,
-                });
-                break;
-            case "newPassword":
-                dispatch({
-                    type: SET_EDIT_PASSWORD,
-                    payload: value,
-                });
-                break;
-            case "confirmNewPassword":
-                dispatch({
-                    type: SET_EDIT_CONFIRM_PASSWORD,
-                    payload: value,
-                });
-                break;
-        }
+    const editUserNameHandler = (e: any): void => {
+        const {value} = e.currentTarget;
+        dispatch({
+            type: SET_EDIT_USER_NAME,
+            payload: value,
+        });
     }
 
     const photoUploadHandler = () => {
@@ -91,28 +71,18 @@ const Edit = () => {
     }
 
     const updateHandler = (): void => {        
-        if(!newUserName && !newPassword && !confirmNewPassword && !newPhoto.current){
+        if(!newUserName && !newPhoto.current){
             dispatch({
                 type: SET_EDIT_MESSAGE,
                 payload: 'No information has been update'
             });
             return;
         }
-        
-        if(newPassword !== confirmNewPassword){
-            dispatch({
-                type: SET_EDIT_MESSAGE,
-                payload: 'Passwords are not same!'
-            });
-            return;
-        }
-        
         dispatch({
             type: EDIT_USER_INFO_REQUEST,
             payload: {
                 uid: uid,
                 userName: newUserName,
-                password: newPassword,
                 photo: newPhoto.current
             }   
         });
@@ -139,7 +109,7 @@ const Edit = () => {
                                 type="account"
                                 value={account}
                                 disabled={true}
-                                onChange={inputHandler} 
+                                //onChange={inputHandler} 
                             />
                         </TextField>
                         <TextField
@@ -158,45 +128,7 @@ const Edit = () => {
                                 id="newUserName"
                                 type="string"
                                 value={newUserName}
-                                onChange={inputHandler} 
-                            />
-                        </TextField>
-                        <TextField
-                            label='New Password (Optional)'
-                            className="textField"  
-                            //helperText={<HelperText>Help Me!</HelperText>}
-                            onTrailingIconSelect={(): void => {
-                                dispatch({
-                                    type: SET_EDIT_PASSWORD,
-                                    payload: ''
-                                })
-                            }}
-                            trailingIcon={<MaterialIcon role="button" icon="delete"/>}
-                        >
-                            <Input
-                                id="newPassword"
-                                type="password"
-                                value={newPassword}
-                                onChange={inputHandler} 
-                            />
-                        </TextField>
-                        <TextField
-                            label='Confirm Password (Optional)'
-                            className="textField"  
-                            //helperText={<HelperText>Help Me!</HelperText>}
-                            onTrailingIconSelect={(): void => {
-                                dispatch({
-                                    type: SET_EDIT_CONFIRM_PASSWORD,
-                                    payload: ''
-                                })
-                            }}
-                            trailingIcon={<MaterialIcon role="button" icon="delete"/>}
-                        >
-                            <Input
-                                id="confirmNewPassword"
-                                type="password"
-                                value={confirmNewPassword}
-                                onChange={inputHandler} 
+                                onChange={editUserNameHandler} 
                             />
                         </TextField>
                         <div className='textField'>
@@ -248,7 +180,7 @@ const Edit = () => {
                 ): []}
             </Card>
         </div>
-        <SignupDialog/>
+        <EditDialog/>
         </>
     );
 }

@@ -7,7 +7,8 @@ import {messageInterface} from '../../../Interfaces';
 const MessageBox = React.memo((userMessage: messageInterface) => {
     const userName = getLocalStorageWithExpiry('userName');
     return(
-        <div 
+        <div
+            data-testid='message-box' 
             className={(userName === userMessage.sourceUser)? "message-box-mine": "message-box-other"}>
             <MessageBoxUserInfo {...userMessage} />
             <MessageBoxText {...userMessage} />

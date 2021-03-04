@@ -52,9 +52,9 @@ const Home = () => {
         <>
             <div className='drawer-container'>
                 <TopBar/>
-                <TopAppBarFixedAdjust>
+                <TopAppBarFixedAdjust className='top-app-bar-fix-adjust'>
                     <DrawerBar />
-                    <ChatRoom />
+                    <ChatRoom />                 
                 </TopAppBarFixedAdjust>
                 <Modal />
             </div>

@@ -25,11 +25,11 @@ const StyleList = () => {
         >
             <ListItem>
                 <ListItemGraphic graphic={<MaterialIcon icon='color_lens'/>} />
-                <ListItemText primaryText='Colorful Theme Style' />
+                <ListItemText primaryText='Colorful Theme' />
             </ListItem>
             <ListItem>
                 <ListItemGraphic graphic={<MaterialIcon icon='format_color_reset'/>} />
-                <ListItemText primaryText='Simple Theme Style' />
+                <ListItemText primaryText='Simple Theme' />
             </ListItem>
         </List>
     );

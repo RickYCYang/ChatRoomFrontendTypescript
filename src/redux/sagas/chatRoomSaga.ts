@@ -5,7 +5,7 @@ import {
     CONNECT_WEB_SOCKET_FAIL
 } from '../actionTypes';
 import {
-    createWebSocket,
+    createWebSocket
 } from '../../Services/WebSocketService'
 
 export function *connectWebSocket(action: any) {

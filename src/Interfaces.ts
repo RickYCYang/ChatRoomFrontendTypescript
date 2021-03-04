@@ -24,12 +24,20 @@ export interface inputEventInterface{
 }
 
 export interface userListInterface{
-    userName:{
-        userName: string,
-        status: string,
-        photo: string
-    }
+    userName: userInfoInterface
 }
+
+export interface userListProps{
+    isOnline: boolean
+}
+
+export interface userInfoInterface{
+    userName: string,
+    status: string
+    photo: string,
+    socketId: string
+}
+
 
 export interface chatRoomState {
     messageBox: messageInterface[],
@@ -43,7 +51,8 @@ export interface chatRoomState {
     chatPeople: string,
     newMessageCount: any,
     imageModalOpen: boolean,
-    imageEncodeString: string
+    imageEncodeString: string,
+    webSocketIsListening: boolean
 }
 
 export interface loginState {
@@ -66,9 +75,7 @@ export interface signupState {
 
 export interface editState {
     account: string,
-    newPassword: string,
     newUserName: string,
-    confirmNewPassword: string,
     newPhotoFileName: string,
     successDialog: boolean,
     message: string,

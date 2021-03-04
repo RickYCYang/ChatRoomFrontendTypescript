@@ -43,6 +43,7 @@ export const sendNewMessage = (webSocket: any, messageType: string, sourceUser: 
 
 export const listenUserList = (webSocket: any, dispatch: any) => {
     webSocket.on('userList', (userList: userListInterface) => {
+        console.log('userList', userList);
         dispatch({
             type: SET_USER_LIST,
             payload: userList

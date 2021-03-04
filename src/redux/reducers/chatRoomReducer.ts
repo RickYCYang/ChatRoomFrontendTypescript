@@ -3,6 +3,7 @@ import {
     CONNECT_WEB_SOCKET_SUCCESS,
     CONNECT_WEB_SOCKET_FAIL,
     DISCONNECT_WEB_SOCKET,
+    SET_WEB_SOCKET_IS_LISTENING,
     SET_MESSAGE_BOX,
     SET_MESSAGE_BOX_STYLE,
     SET_IS_MOBILE,
@@ -26,13 +27,15 @@ const initState: chatRoomState = {
         userName:{
             userName: '',
             status: '',
-            photo: ''
+            photo: '',
+            socketId: '',
         }
     },
     chatPeople: '',
     newMessageCount: {},
     imageModalOpen: false,
     imageEncodeString: '',
+    webSocketIsListening: false
 }
 
 const chatRoomReducer = (state = initState, action: any): chatRoomState => {
@@ -126,11 +129,17 @@ const chatRoomReducer = (state = initState, action: any): chatRoomState => {
                 }
             }
         }
-        case SET_IMAGE_MODAL:{
+        case SET_IMAGE_MODAL: {
             return{
                 ...state,
                 imageModalOpen: action.payload.imageModalOpen,
                 imageEncodeString: action.payload.imageEncodeString,
+            }
+        }
+        case SET_WEB_SOCKET_IS_LISTENING: {
+            return {
+                ...state,
+                webSocketIsListening: true
             }
         }
         default: return state;

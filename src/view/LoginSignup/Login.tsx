@@ -100,6 +100,7 @@ const Login = () => {
                         >
                             <Input
                                 id="account"
+                                data-testid='email'
                                 type="email"
                                 value={account}
                                 onChange={setAccountPassword} 
@@ -120,6 +121,7 @@ const Login = () => {
                             <Input
                                 id="password"
                                 type="password"
+                                data-testid='password'
                                 value={password}
                                 onChange={setAccountPassword} 
                             />
@@ -127,6 +129,7 @@ const Login = () => {
                         <div>
                             <Button 
                                 className="signup_login_btn"
+                                data-testid='login'
                                 outlined={true} 
                                 raised={true} 
                                 icon={<MaterialIcon role="button" icon="login" />}
@@ -135,7 +138,8 @@ const Login = () => {
                             </Button>
                             <Button 
                                 className="signup_login_btn"
-                                outlined={true} 
+                                outlined={true}
+                                data-testid='signup'
                                 raised={true} 
                                 icon={<MaterialIcon role="button" icon="account_box" />}
                                 onClick={() => {

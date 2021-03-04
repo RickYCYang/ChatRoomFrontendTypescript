@@ -64,7 +64,7 @@ const MessageSender = () => {
                 convertFile(compressedFile).then((fileBase64: string) => {
                 const timestamp: string = getTimeStamp();
                 sendNewMessage(webSocket, 'image', userName, chatPeople, fileBase64, timestamp);
-            }).catch(err => console.log('error', err));
+                }).catch(err => console.log('error', err));
             } catch (error) {
                 console.log(error);
             }
@@ -75,12 +75,14 @@ const MessageSender = () => {
         <div id='messageSender'> 
             <TextField
                 label='你想說什麼'
-                id="msgTextEdit"                 
+                id="msgTextEdit"
+                data-testid='msgTextEdit'             
                 //helperText={<HelperText>Help Me!</HelperText>}
                 onTrailingIconSelect={() => {fileUpload.current?.click();}}
                 trailingIcon={<MaterialIcon role="button" icon="image"/>}
             >
                 <Input
+                    data-testid='msgTextEditInput'
                     id="msgTextEditInput" 
                     value={message}
                     onChange={messageHandler} 
@@ -89,6 +91,7 @@ const MessageSender = () => {
             <input type='file' className={'input-element'} ref={fileUpload} accept="image/*" onChange={fileUploadHandler}/> 
             <Button 
                 id="txtSendBtn"
+                data-testid='txtSendBtn'
                 outlined={true} 
                 raised={true} 
                 icon={<MaterialIcon role="button" icon="send" />}

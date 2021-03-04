@@ -30,13 +30,13 @@ const MessageBoxText = (userMessage: messageInterface) => {
                 return userMessage.message
             }
             case 'image':{
-                return <img src={userMessage.message} className='message-image' onClick={openImageMadal}></img>
+                return <img src={userMessage.message} className='message-image' onClick={openImageMadal} />
             }
         }   
     }
     //console.log('userMessage', userMessage);
     return(
-        <div className={(styleMessageBox)?((userName === userMessage.sourceUser)? "style-message-text-mine": "style-message-text-other"): 'message-text'}>
+        <div data-testid='message-box-text' className={(styleMessageBox)?((userName === userMessage.sourceUser)? "style-message-text-mine": "style-message-text-other"): 'message-text'}>
             {   
                 getMessage()
             }

@@ -54,8 +54,8 @@ const TopBar = () => {
                         />
                     </TopAppBarTitle>
                 </TopAppBarSection>
-                <TopAppBarSection>
-                    <div id='chat-people-block'>
+                <TopAppBarSection className='chat-people-section'>
+                    <div className='chat-people-block'>
                         <p id='chat-people'> Chat: {chatPeople} </p>
                         <p id='online-people'> ( Online People: {getOnlinePeople()} )</p>
                     </div>

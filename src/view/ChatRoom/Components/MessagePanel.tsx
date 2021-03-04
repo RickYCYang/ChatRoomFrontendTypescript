@@ -37,7 +37,7 @@ const MessagePanel = () => {
         <div className={(styleMessageBox)? backgroundStyleCss.style: backgroundStyleCss.nonStyle}>
             <div id="messagePanel" ref={messagePanelRef}>
                 {
-                    messageBox.filter((userMessage:messageInterface) => {
+                    messageBox.filter((userMessage: messageInterface) => {
                         if(chatPeople === 'Public' && userMessage.targetUser === 'Public'){
                             return userMessage;
                         }else if((chatPeople === userMessage.targetUser && userName === userMessage.sourceUser) ||
@@ -46,7 +46,10 @@ const MessagePanel = () => {
                                     return userMessage;
                                 }
                     }).map((userMessage: messageInterface) => (
-                        <MessageBox {...userMessage} key={userMessage.sourceUser + userMessage.timestamp}/>
+                        <MessageBox 
+                            {...userMessage} 
+                            key={userMessage.sourceUser + userMessage.timestamp}
+                        />
                     ))
                 }
                 <div className='anchor' ref={anchorRef}></div>

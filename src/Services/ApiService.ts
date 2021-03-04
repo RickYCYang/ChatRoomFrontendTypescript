@@ -10,15 +10,30 @@ import {
 import axios, {AxiosRequestConfig} from 'axios';
 
 axios.defaults.baseURL = serverHostName;
-axios.defaults.headers.post['Accept'] = 'application/json';
+//axios.defaults.headers.get['Content-Type'] = 'application/json';
+//axios.defaults.headers.get['Accept'] = 'application/json';
+
+//axios.defaults.headers.post['Accept'] = 'application/json';
+//axios.defaults.headers.post['Content-Type'] = 'application/json';
+axios.defaults.headers['Accept'] = 'application/json';
+axios.defaults.headers['Content-Type'] = 'application/json';
+axios.defaults.headers.get['Content-Type'] = 'application/json';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
+
+//axios.defaults.headers.Origin = 'http://localhost:3001';
+//axios.defaults.headers['Access-Control-Allow-Origin'] = 'http://localhost:3001'; //serverHostName;
 axios.defaults.withCredentials = true;
 axios.defaults.xsrfCookieName = 'XSRF-TOKEN'; // default
 axios.defaults.xsrfHeaderName = 'X-XSRF-TOKEN'; // default
 
 
 export const axiosGet = (url: string, params: object): object => {
-    return axios.get(url, {params: params});
+    console.log('url', url, params);
+    console.log('hostname', axios.defaults.baseURL);
+    let config: AxiosRequestConfig = {
+        params: params
+    }
+    return axios.get(url, config);
 }
 
 export const axiosPost = (url: string, data: object): object => {
@@ -37,15 +52,22 @@ export const axiosPostFormData = (url: string, data: any): object => {
         //console.log(key, value);
         formData.append(key, value);
     });
-    /*
-    formData.append('photo', data.photo);
-    formData.append('email', data.email);
-    formData.append('password', data.password);
-    formData.append('userName', data.userName);
-    */
-    //console.log('formData', formData.values());
-    //formData.append('file', yourFile);
     return axios.post(url, formData, config);
+}
+
+export const axiosPatchFormData = (url: string, data: any): object => {
+    console.log('data', data);
+    let config: AxiosRequestConfig = {
+        headers : {
+          'Content-Type' : 'multipart/form-data'
+        }
+    }
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]: any) => {
+        //console.log(key, value);
+        formData.append(key, value);
+    });
+    return axios.patch(url, formData, config);
 }
 
 export default axios;
