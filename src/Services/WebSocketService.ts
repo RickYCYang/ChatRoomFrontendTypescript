@@ -4,6 +4,11 @@ import {
     getLocalStorageWithExpiry,
     setLocalStorageWithExpiry
 } from './StorageService';
+
+import {
+    encrypt,
+    decrypt
+} from './CryptoService'
 import {
     SET_MESSAGE_BOX,
     SET_USER_LIST,
@@ -29,16 +34,22 @@ export const disconnectWebSocket = (webSocket: any): void => {
     webSocket.disconnect(serverHostName, {query: `userName=${userName}`});
 }
 
-export const sendNewMessage = (webSocket: any, messageType: string, sourceUser: string, targetUser: string, message: string, 
-    timestamp: string) => {
-    //console.log('socket', sourceUser, targetUser);
-    webSocket.emit('sendMessage', {
-        sourceUser: sourceUser,
-        targetUser: targetUser,
-        messageType: messageType,
-        message: message,
-        timestamp: timestamp
-    });
+export const sendNewMessage = (webSocket: any, messageType: string, 
+    sourceUser: string, targetUser: string, message: string, timestamp: string) => {
+    console.log('before encrypt', sourceUser, targetUser, message);
+    console.log('after encrypt', encrypt(message));
+    console.log('after decrypt', decrypt(encrypt(message)));
+    console.log('socket', sourceUser, targetUser, message);
+    const  encryptMessage = encrypt(JSON.stringify(
+        {
+            sourceUser: sourceUser,
+            targetUser: targetUser,
+            messageType: messageType,
+            message: message,
+            timestamp: timestamp
+        })
+    );
+    webSocket.emit('sendMessage', encryptMessage);
 }
 
 export const listenUserList = (webSocket: any, dispatch: any) => {
@@ -52,15 +63,16 @@ export const listenUserList = (webSocket: any, dispatch: any) => {
 }
 
 export const listenNewMessage = (webSocket: any, dispatch: any, isMobile: boolean) => {   
-    webSocket.on('newMessage', (userMessage: messageInterface) => {   
-        setNewMessageAlarm(dispatch, userMessage.sourceUser, userMessage.targetUser);
+    webSocket.on('newMessage', (userMessage: string) => { 
+        const decryptMessage: messageInterface = JSON.parse(decrypt(userMessage));  
+        setNewMessageAlarm(dispatch, decryptMessage.sourceUser, decryptMessage.targetUser);
         dispatch({
             type: SET_MESSAGE_BOX,
-            payload: userMessage
+            payload: decryptMessage
         });
         if(!document.hasFocus() && !isMobile){  
-            new Notification(userMessage.sourceUser, {
-                body: userMessage.message,
+            new Notification(decryptMessage.sourceUser, {
+                body: decryptMessage.message,
                 icon: require('../Image/message.png'),
             }); 
         }

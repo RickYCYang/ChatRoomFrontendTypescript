@@ -452,7 +452,11 @@ html, body {
 .mdc-drawer__content{
     background-color: rgba(0,0,0,0.9);
     color: white;
-    //overflow-y: hidden;
+    overflow-y: hidden;
+}
+
+.mdc-drawer__content:hover{
+    overflow-y: scroll;
 }
 
 #drawer-user .mdc-list-item__graphic {
